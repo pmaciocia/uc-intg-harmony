@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # The repository default for GITHUB_TOKEN is read-only, which makes the
+    # release step fail with a 403. Grant write access here rather than
+    # loosening the repository-wide default.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
