@@ -1,0 +1,37 @@
+{
+  "driver_id": "harmony",
+  "version": "0.1.0",
+  "release_date": "2026-08-14",
+  "min_core_api": "0.24.3",
+  "name": {
+    "en": "Logitech Harmony Hub"
+  },
+  "icon": "uc:remote",
+  "description": {
+    "en": "Control Logitech Harmony Hubs: start activities and send device commands from your Remote."
+  },
+  "port": 9095,
+  "developer": {
+    "name": "pmaciocia",
+    "url": "https://github.com/pmaciocia/uc-intg-harmony"
+  },
+  "home_page": "https://github.com/pmaciocia/uc-intg-harmony",
+  "setup_data_schema": {
+    "title": {
+      "en": "Harmony Hub"
+    },
+    "settings": [
+      {
+        "id": "address",
+        "label": {
+          "en": "Hub IP address"
+        },
+        "field": {
+          "text": {
+            "value": ""
+          }
+        }
+      }
+    ]
+  }
+}

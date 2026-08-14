@@ -1,0 +1,14 @@
+{
+  "id": "uc-intg-harmony",
+  "name": "Logitech Harmony Hub",
+  "description": "Control Logitech Harmony Hubs: start activities and send device commands",
+  "author": "pmaciocia",
+  "repository": "https://github.com/pmaciocia/uc-intg-harmony",
+  "categories": ["home-automation", "remote"],
+  "features": ["media_player", "remote"],
+  "official": false,
+  "custom": true,
+  "supports_backup": true,
+  "backup_min_version": "0.1.0",
+  "driver_id": "harmony"
+}

@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches driver.json
+        # uc-intg-manager compares the release tag against the installed
+        # driver.json version, so a mismatch shows a permanent "update
+        # available" to every user.
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version=$(python3 -c "import json;print(json.load(open('driver.json'))['version'])")
+          if [ "$tag" != "$version" ]; then
+            echo "tag $tag != driver.json version $version" >&2
+            exit 1
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Test
+        run: |
+          pip install -r requirements.txt
+          python -m compileall -q src
+          python -m unittest discover -s tests -v
+
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Build aarch64 archive
+        run: ./build.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uc-intg-harmony
+          path: "*.tar.gz"
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.tar.gz"
+          generate_release_notes: true

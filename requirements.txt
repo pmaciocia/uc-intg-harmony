@@ -1,0 +1,2 @@
+ucapi==0.7.0
+aioharmony==1.0.8
