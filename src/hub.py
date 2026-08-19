@@ -55,7 +55,9 @@ class Hub:
     """Wraps aioharmony and exposes the hub as devices and activities."""
 
     def __init__(self, hub_id: str, address: str, name: str) -> None:
-        self.identifier = hub_id
+        # Always a string: aioharmony reports the hub id as an int, and the
+        # Remote rejects a settings page whose dropdown ids are not strings.
+        self.identifier = str(hub_id) if hub_id else ""
         self.address = address
         self.name = name
         self.events = AsyncIOEventEmitter()
@@ -134,7 +136,7 @@ class Hub:
         self._connected = True
         self.name = api.name or self.name
         if not self.identifier:
-            self.identifier = api.hub_id
+            self.identifier = str(api.hub_id)
         self.events.emit(Events.CONNECTED, self.identifier)
 
     async def disconnect(self) -> None:

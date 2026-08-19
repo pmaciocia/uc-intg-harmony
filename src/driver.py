@@ -115,7 +115,7 @@ async def main() -> None:
         if bundle
         else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "driver.json")
     )
-    setup = SetupFlow(config, add_hub)
+    setup = SetupFlow(config, add_hub, hubs)
     await api.init(driver_json, setup.handle)
 
 

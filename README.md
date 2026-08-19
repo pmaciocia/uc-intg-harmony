@@ -25,13 +25,40 @@ Two behaviours differ from the original by design:
 - **No per-device power state.** The hub reports no feedback for individual
   devices, so a `remote` entity is `ON` whenever its hub is reachable.
 
-## Not yet ported
+## Importing activities to the Remote
 
-The original also acted as a **Core-API client**: it authenticated to the Remote
-with an API key and auto-created a UC Activity per Harmony activity, complete
-with `included_entities`, on/off sequences calling `media_player.select_source`,
-uploaded per-activity icons, and a UI profile page grouping them. That is a
-separate concern from the integration driver and is not implemented here.
+Like the original, the driver can act as a **Core-API client** and create one UC
+Activity per Harmony activity, so they appear as first-class activities rather
+than only as sources on the media-player entity. Each created activity includes
+the hub's media-player and gets sequences that call `media_player.select_source`
+on, and `media_player.off` off.
+
+To run it, open the integration's **Setup**, choose the hub, and set the action
+to *Import activities to the Remote*. You will be asked for the
+web-configurator PIN once.
+
+Creating activities needs authenticated access to the Remote, and the
+web-configurator has no screen for issuing an API key. So the driver mints one
+itself from the PIN, with the `configuration` scope only — not `admin`. The PIN
+is used for that single request and never stored; the resulting key is kept in
+`config.json` so later imports do not ask again, and is deliberately left out of
+the configuration backup (see below).
+
+The key is named `uc-intg-harmony`. Key names are unique on the Remote, so if
+one of that name already exists it is revoked and reissued rather than failing.
+
+An activity whose name already exists on the Remote is **skipped and reported,
+never modified** — the import cannot damage activities you built by hand, and
+re-running it is safe. Add a Harmony activity later, run the import again, and
+only the new one is created.
+
+Turning off any imported activity powers the whole hub off, because that is what
+Harmony's PowerOff does.
+
+### Not yet ported
+
+The original also uploaded per-activity icons and created a UI profile page
+grouping the activities. Neither is implemented.
 
 ## Integration Manager support
 
@@ -87,7 +114,7 @@ The driver advertises itself over mDNS; add it from the web-configurator under
 ./build.sh
 curl -X POST "http://$REMOTE_IP/api/intg/install?update=true" \
   --user "web-configurator:$PIN" \
-  --form "file=@uc-intg-harmony-0.1.1-aarch64.tar.gz"
+  --form "file=@uc-intg-harmony-0.2.3-aarch64.tar.gz"
 ```
 
 On x86-64 the build needs QEMU binfmt support for the aarch64 image:
@@ -99,7 +126,7 @@ sudo apt install qemu-user-static binfmt-support
 ### Sandbox budget
 
 Custom integrations are throttled at 250 MB RSS and killed at 350 MB, and the
-archive may not exceed 100 MB. Measured for v0.1.1:
+archive may not exceed 100 MB. Measured for v0.2.3:
 
 | | Value | Limit |
 |---|---|---|

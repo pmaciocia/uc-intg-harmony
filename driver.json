@@ -1,6 +1,6 @@
 {
   "driver_id": "harmony",
-  "version": "0.1.1",
+  "version": "0.2.3",
   "release_date": "2026-08-19",
   "min_core_api": "0.24.3",
   "name": {
@@ -21,13 +21,15 @@
     },
     "settings": [
       {
-        "id": "address",
+        "id": "info",
         "label": {
-          "en": "Hub IP address"
+          "en": "Logitech Harmony Hub"
         },
         "field": {
-          "text": {
-            "value": ""
+          "label": {
+            "value": {
+              "en": "You will be asked for the hub IP address on the next screen."
+            }
           }
         }
       }
