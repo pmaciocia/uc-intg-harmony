@@ -18,6 +18,7 @@ docker run --rm --platform=linux/arm64/v8 \
   "${PYINSTALLER_IMAGE}" \
   bash -c "python -m pip install -r requirements.txt && \
     pyinstaller --clean --onedir --name driver \
+      --add-data driver.json:. \
       --exclude-module slixmpp \
       --collect-all zeroconf \
       src/driver.py"

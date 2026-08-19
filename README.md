@@ -87,7 +87,7 @@ The driver advertises itself over mDNS; add it from the web-configurator under
 ./build.sh
 curl -X POST "http://$REMOTE_IP/api/intg/install?update=true" \
   --user "web-configurator:$PIN" \
-  --form "file=@uc-intg-harmony-0.1.0-aarch64.tar.gz"
+  --form "file=@uc-intg-harmony-0.1.1-aarch64.tar.gz"
 ```
 
 On x86-64 the build needs QEMU binfmt support for the aarch64 image:
@@ -99,7 +99,7 @@ sudo apt install qemu-user-static binfmt-support
 ### Sandbox budget
 
 Custom integrations are throttled at 250 MB RSS and killed at 350 MB, and the
-archive may not exceed 100 MB. Measured for v0.1.0:
+archive may not exceed 100 MB. Measured for v0.1.1:
 
 | | Value | Limit |
 |---|---|---|

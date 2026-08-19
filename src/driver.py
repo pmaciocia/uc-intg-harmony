@@ -104,13 +104,19 @@ async def main() -> None:
     for stored in config.hubs.values():
         await add_hub(Hub(stored.hub_id, stored.address, stored.name))
 
-    # driver.json sits one level above the source dir in the repo and above
-    # bin/driver in the packaged archive.
-    anchor = sys.executable if getattr(sys, "frozen", False) else os.path.abspath(__file__)
-    setup = SetupFlow(config, add_hub)
-    await api.init(
-        os.path.join(os.path.dirname(anchor), "..", "driver.json"), setup.handle
+    # Only ./bin, ./config and ./data of the installed archive are readable at
+    # runtime on the Remote, so the archive-root driver.json cannot be opened
+    # from bin/driver. build.sh bundles a copy with --add-data instead, which
+    # PyInstaller unpacks into sys._MEIPASS. Outside the bundle the repo copy
+    # sits one level above this source dir.
+    bundle = getattr(sys, "_MEIPASS", None)
+    driver_json = (
+        os.path.join(bundle, "driver.json")
+        if bundle
+        else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "driver.json")
     )
+    setup = SetupFlow(config, add_hub)
+    await api.init(driver_json, setup.handle)
 
 
 if __name__ == "__main__":
